@@ -1,0 +1,159 @@
+ int trig = 2;
+ int PWM1 = 3;
+ int echo1 = 4;
+ int echo2 = 5;
+ int echo3 = 8;
+ int PWM2 = 11;
+ int ctrl1 = 12;
+ int ctrl2 = 13;
+ int s1 = 0;
+ int s2 = 0;
+ int s3 = 0;
+ int triggered = 0;
+ int fin = 0;
+ unsigned long t = 0;
+ 
+void setup() 
+{
+  Serial.begin(9600);
+  pinMode(trig, OUTPUT);
+  pinMode(ctrl1, OUTPUT);
+  pinMode(ctrl2, OUTPUT);
+  pinMode(PWM1, OUTPUT);
+  pinMode(PWM2, OUTPUT);
+  
+}
+void rangefinders()
+{
+  if (triggered == 0)
+  {
+    digitalWrite(trig, HIGH);
+    delayMicroseconds(20);
+    digitalWrite(trig, LOW);
+    t = micros() + 3500;
+    triggered = 1;
+  }
+  else
+  {
+    s1 = (digitalRead(echo1) == 0);
+    s2 = (digitalRead(echo2) == 0);
+    s3 = (digitalRead(echo3) == 0);
+    t = micros() + 50000L;
+    triggered = 0;
+  }
+}
+
+
+void loop() 
+{
+
+  int sight = s1*100 + s2*10 + s3;
+  
+  if (micros() >= t){
+    rangefinders();
+  }
+
+  switch(sight)
+  {
+    case 60:
+    left();
+    Serial.println(sight);
+    break;
+
+    case 110:
+    left();
+    Serial.println(sight);
+    break;
+
+    case 10:
+    forward();
+    Serial.println(sight);
+    break;
+
+    case 11:
+    right();
+    Serial.println(sight);
+    break;
+
+    case 1:
+    right();
+    Serial.println(sight);
+    break;
+
+    case 111:
+    left();
+    Serial.println(sight);
+    break;
+
+    case 101:
+    left();
+    Serial.println(sight);
+    break;
+
+    default:
+    left();
+    Serial.println(sight);
+    break;
+
+  } 
+
+}
+
+
+
+
+
+void right()
+{
+  digitalWrite(ctrl1, HIGH);
+  digitalWrite(ctrl2, LOW);
+  analogWrite(PWM1, 60);
+  analogWrite(PWM2, 60);
+}
+
+void left()
+{
+  digitalWrite(ctrl1, LOW);
+  digitalWrite(ctrl2, HIGH);
+  analogWrite(PWM1, 60);
+  analogWrite(PWM2, 60);
+}
+
+void arret()
+{
+  digitalWrite(ctrl1, LOW);
+  digitalWrite(ctrl2, LOW);
+  analogWrite(PWM1, 0);
+  analogWrite(PWM2, 0);
+}
+
+void forward()
+{
+  digitalWrite(ctrl1, HIGH);
+  digitalWrite(ctrl2, HIGH);
+  analogWrite(PWM1, 60);
+  analogWrite(PWM2, 60);
+}
+
+void right_forward()
+{
+  digitalWrite(ctrl1, HIGH);
+  digitalWrite(ctrl2, HIGH);
+  analogWrite(PWM1, 60);
+  analogWrite(PWM2, 27);
+}
+
+void left_forward()
+{
+  digitalWrite(ctrl1, HIGH);
+  digitalWrite(ctrl2, HIGH);
+  analogWrite(PWM1, 27);
+  analogWrite(PWM2, 60);
+}
+void forward2()
+{
+  digitalWrite(ctrl1, HIGH);
+  digitalWrite(ctrl2, HIGH);
+  analogWrite(PWM1, 60);
+  analogWrite(PWM2, 60);
+}
